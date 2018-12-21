@@ -1,5 +1,8 @@
 #!/bin/bash
 
+which prog 2>&1 > /dev/null
+has_prog=$?
+
 if [ -z "$1" ]; then
   echo "You must specify an IP subnet (e.g. 192.168.37)" >&2
   exit -1
@@ -31,7 +34,12 @@ do
       echo "${ip}${i}" >> $fname
     fi
   fi
-  prog $i $max
+
+  if [ $has_prog -eq 0 ]; then
+    prog $i $max
+  else
+    echo -en "$i, "
+  fi
 done
 echo
 cat $fname
