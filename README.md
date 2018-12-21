@@ -4,7 +4,7 @@
 ipfreely is a simple bash script to scan for unused IPs in a given subnet.
 
 ## Usage
-Give ipfreely the first three octets of an IP range like in the example below.
+Give ipfreely the first three octets of an IPv4 range like in the example below.
 
 ```bash
 ipfreely 10.0.0
