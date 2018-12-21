@@ -1,0 +1,37 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+  echo "You must specify an IP subnet (e.g. 192.168.37)" >&2
+  exit -1
+fi
+
+ip=$1
+ends_okay=`echo "$ip" | grep -o '\.$'`
+
+if [ -z $ends_okay ]; then
+  ip="$ip."
+fi
+
+fname="${ip}log"
+
+cd `mktemp -d`
+pwd >> $fname
+
+let i=0
+let max=255
+while [ $i -lt $max ]
+do
+  let i=$i+1
+  d=`nslookup ${ip}${i} | grep -Eio "can't" | tr -d "'"`
+  if [ "$d" ]; then
+    ping -c 1 -W 1 ${ip}${i} 2>&1 > /dev/null
+    status=$?
+
+    if [ $status -ne 0 ]; then
+      echo "${ip}${i}" >> $fname
+    fi
+  fi
+  prog $i $max
+done
+echo
+cat $fname
